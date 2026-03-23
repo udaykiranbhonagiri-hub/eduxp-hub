@@ -1,48 +1,48 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserPlus, MessageSquare } from "lucide-react";
+import { Users, MessageSquare, Video, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function StudentTeams() {
   const teams = [
-    { name: "Project Alpha", members: 4, role: "Team Lead", status: "Active" },
-    { name: "Lab Group B", members: 3, role: "Member", status: "Active" },
-    { name: "Hackathon Squad", members: 5, role: "Member", status: "Upcoming" },
+    { name: "Project Alpha", members: 4, role: "Team Lead", status: "Active", color: "gradient-primary" },
+    { name: "Lab Group B", members: 3, role: "Member", status: "Active", color: "gradient-teal" },
+    { name: "Hackathon Squad", members: 5, role: "Member", status: "Upcoming", color: "gradient-accent" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'var(--font-display)' }}>Team Panel</h2>
-          <p className="text-muted-foreground">Collaborate with your teams</p>
-        </div>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="page-header animate-slide-up">
+        <h2 className="page-title">Team Panel</h2>
+        <p className="page-subtitle">Collaborate with your teams and classmates</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {teams.map((team, i) => (
-          <Card key={i} className="glass-card hover:shadow-xl transition-all group">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-primary" />
+          <Card key={i} className={`glass-card-elevated animate-slide-up stagger-${i + 1}`}>
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 rounded-2xl ${team.color} flex items-center justify-center shadow-sm`}>
+                  <Users className="w-6 h-6 text-primary-foreground" />
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full font-medium ${team.status === "Active" ? "bg-success/10 text-success" : "bg-accent/10 text-accent"}`}>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider ${team.status === "Active" ? "badge-success" : "badge-warning"}`}>
                   {team.status}
                 </span>
               </div>
-              <CardTitle className="text-lg mt-2" style={{ fontFamily: 'var(--font-display)' }}>{team.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+              <h3 className="text-lg font-bold font-display text-foreground mb-1">{team.name}</h3>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5">
                 <span>{team.members} members</span>
-                <span className="text-primary font-medium">{team.role}</span>
+                <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                <span className="flex items-center gap-1 text-primary font-medium">
+                  {team.role === "Team Lead" && <Crown className="w-3 h-3" />}
+                  {team.role}
+                </span>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  <MessageSquare className="w-4 h-4 mr-1" /> Chat
+                <Button variant="outline" size="sm" className="flex-1 rounded-xl h-9">
+                  <MessageSquare className="w-4 h-4 mr-1.5" /> Chat
                 </Button>
-                <Button variant="outline" size="sm">
-                  <UserPlus className="w-4 h-4" />
+                <Button variant="outline" size="sm" className="rounded-xl h-9">
+                  <Video className="w-4 h-4" />
                 </Button>
               </div>
             </CardContent>

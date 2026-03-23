@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, ClipboardList, BookOpen, LogOut, Menu, X,
-  GraduationCap, ChevronRight, Bot
+  GraduationCap, Bot, ChevronLeft, Bell, Search
 } from "lucide-react";
 
 interface Props {
@@ -35,38 +35,54 @@ export default function DashboardLayout({ children }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const links = role === "student" ? studentLinks : role === "faculty" ? facultyLinks : managementLinks;
-  const roleName = role === "student" ? "Student" : role === "faculty" ? "Faculty" : "Management";
+  const roleBadge = role === "student" ? "STU" : role === "faculty" ? "FAC" : "MGT";
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
   };
 
+  const sidebarWidth = collapsed ? "w-[72px]" : "w-[260px]";
+
   return (
     <div className="min-h-screen flex bg-background">
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 bg-foreground/30 backdrop-blur-sm z-40 lg:hidden animate-fade-in" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 gradient-primary text-primary-foreground transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} flex flex-col`}>
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary-foreground/20 flex items-center justify-center">
-            <GraduationCap className="w-6 h-6" />
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 ${sidebarWidth} bg-sidebar flex flex-col transform transition-all duration-300 ease-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        {/* Header */}
+        <div className={`h-16 flex items-center border-b border-sidebar-border ${collapsed ? "justify-center px-2" : "px-5"}`}>
+          <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+            <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
-          <div>
-            <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-display)' }}>EduTrack</h2>
-            <p className="text-xs opacity-80">{roleName} Portal</p>
-          </div>
-          <button className="lg:hidden ml-auto" onClick={() => setSidebarOpen(false)}>
+          {!collapsed && (
+            <span className="ml-3 text-lg font-bold font-display text-sidebar-accent-foreground tracking-tight">EduTrack</span>
+          )}
+          <button className="lg:hidden ml-auto text-sidebar-foreground" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5" />
+          </button>
+          <button className="hidden lg:flex ml-auto text-sidebar-muted hover:text-sidebar-foreground transition-colors" onClick={() => setCollapsed(!collapsed)}>
+            <ChevronLeft className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`} />
           </button>
         </div>
 
-        <nav className="flex-1 px-3 space-y-1">
+        {/* Role badge */}
+        {!collapsed && (
+          <div className="px-5 py-3">
+            <div className="px-3 py-1.5 rounded-lg bg-sidebar-accent text-xs font-medium text-sidebar-primary font-display tracking-wider">
+              {role === "student" ? "🎓 Student Portal" : role === "faculty" ? "📚 Faculty Portal" : "⚙️ Management Portal"}
+            </div>
+          </div>
+        )}
+
+        {/* Nav links */}
+        <nav className={`flex-1 ${collapsed ? "px-2" : "px-3"} space-y-1 py-2`}>
           {links.map((link) => {
             const active = location.pathname === link.to;
             return (
@@ -74,67 +90,86 @@ export default function DashboardLayout({ children }: Props) {
                 key={link.to}
                 to={link.to}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  active
-                    ? "bg-primary-foreground/20 shadow-lg"
-                    : "hover:bg-primary-foreground/10 opacity-80 hover:opacity-100"
+                title={collapsed ? link.label : undefined}
+                className={`flex items-center gap-3 ${collapsed ? "justify-center px-2" : "px-3"} py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  active ? "nav-link-active" : "nav-link-inactive"
                 }`}
               >
-                <link.icon className="w-5 h-5" />
-                {link.label}
-                {active && <ChevronRight className="w-4 h-4 ml-auto" />}
+                <link.icon className={`w-[18px] h-[18px] shrink-0 ${active ? "text-sidebar-primary" : ""}`} />
+                {!collapsed && <span>{link.label}</span>}
               </Link>
             );
           })}
 
           {role === "student" && (
-            <Link
-              to="/student/mentor"
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all mt-4 ${
-                location.pathname === "/student/mentor"
-                  ? "bg-primary-foreground/20 shadow-lg"
-                  : "gradient-accent opacity-90 hover:opacity-100"
-              }`}
-            >
-              <Bot className="w-5 h-5" />
-              AI Mentor
-            </Link>
+            <>
+              <div className={`my-3 h-px bg-sidebar-border ${collapsed ? "mx-1" : "mx-2"}`} />
+              <Link
+                to="/student/mentor"
+                onClick={() => setSidebarOpen(false)}
+                title={collapsed ? "AI Mentor" : undefined}
+                className={`flex items-center gap-3 ${collapsed ? "justify-center px-2" : "px-3"} py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  location.pathname === "/student/mentor"
+                    ? "gradient-accent text-accent-foreground shadow-md shadow-accent/20"
+                    : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+                }`}
+              >
+                <Bot className="w-[18px] h-[18px] shrink-0" />
+                {!collapsed && <span>AI Mentor</span>}
+                {!collapsed && (
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded-md bg-accent/20 text-accent font-bold">NEW</span>
+                )}
+              </Link>
+            </>
           )}
         </nav>
 
-        <div className="p-4 border-t border-primary-foreground/20">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full bg-primary-foreground/20 flex items-center justify-center text-sm font-bold">
+        {/* User section */}
+        <div className={`border-t border-sidebar-border ${collapsed ? "p-2" : "p-4"}`}>
+          <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
+            <div className="w-9 h-9 rounded-xl gradient-teal flex items-center justify-center text-sm font-bold text-teal-foreground shrink-0">
               {profile?.full_name?.[0]?.toUpperCase() || "U"}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{profile?.full_name || "User"}</p>
-              <p className="text-xs opacity-70 truncate">{user?.email}</p>
-            </div>
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-sidebar-accent-foreground truncate">{profile?.full_name || "User"}</p>
+                <p className="text-xs text-sidebar-muted truncate">{user?.email}</p>
+              </div>
+            )}
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10"
+            size="sm"
+            className={`${collapsed ? "w-9 h-9 p-0 justify-center" : "w-full justify-start"} mt-2 text-sidebar-muted hover:text-sidebar-accent-foreground hover:bg-sidebar-accent rounded-xl`}
             onClick={handleSignOut}
+            title="Sign Out"
           >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+            <LogOut className="w-4 h-4 shrink-0" />
+            {!collapsed && <span className="ml-2 text-sm">Sign Out</span>}
           </Button>
         </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 min-w-0">
-        <header className="h-16 border-b border-border bg-card flex items-center px-6 gap-4">
-          <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-6 h-6 text-foreground" />
+      <main className="flex-1 min-w-0 flex flex-col">
+        <header className="h-16 border-b border-border bg-card/80 backdrop-blur-lg sticky top-0 z-30 flex items-center px-4 sm:px-6 gap-3">
+          <button className="lg:hidden w-9 h-9 rounded-xl bg-muted flex items-center justify-center" onClick={() => setSidebarOpen(true)}>
+            <Menu className="w-5 h-5 text-foreground" />
           </button>
-          <h1 className="text-lg font-semibold text-foreground" style={{ fontFamily: 'var(--font-display)' }}>
-            {links.find((l) => l.to === location.pathname)?.label || "Dashboard"}
+          <h1 className="text-lg font-semibold text-foreground font-display">
+            {links.find((l) => l.to === location.pathname)?.label || (location.pathname.includes("mentor") ? "AI Mentor" : "Dashboard")}
           </h1>
+          <div className="ml-auto flex items-center gap-2">
+            <button className="w-9 h-9 rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+              <Search className="w-[18px] h-[18px]" />
+            </button>
+            <button className="w-9 h-9 rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors relative">
+              <Bell className="w-[18px] h-[18px]" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent" />
+            </button>
+          </div>
         </header>
-        <div className="p-6 animate-fade-in">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 animate-fade-in">
           {children}
         </div>
       </main>
