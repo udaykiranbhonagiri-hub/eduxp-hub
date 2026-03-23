@@ -1,57 +1,62 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
-import { Users, BookOpen, ClipboardCheck, TrendingUp } from "lucide-react";
+import { Users, BookOpen, ClipboardCheck, TrendingUp, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function FacultyDashboard() {
   const { profile } = useAuth();
 
   const stats = [
-    { label: "Total Students", value: "120", icon: Users, bg: "bg-primary/10", color: "text-primary" },
-    { label: "Courses", value: "4", icon: BookOpen, bg: "bg-accent/10", color: "text-accent" },
-    { label: "Attendance Marked", value: "95%", icon: ClipboardCheck, bg: "bg-success/10", color: "text-success" },
-    { label: "Avg Performance", value: "74%", icon: TrendingUp, bg: "bg-info/10", color: "text-info" },
+    { label: "Total Students", value: "120", icon: Users, gradient: "gradient-primary" },
+    { label: "Courses", value: "4", icon: BookOpen, gradient: "gradient-accent" },
+    { label: "Attendance Marked", value: "95%", icon: ClipboardCheck, gradient: "gradient-success" },
+    { label: "Avg Performance", value: "74%", icon: TrendingUp, gradient: "gradient-teal" },
+  ];
+
+  const actions = [
+    { label: "Mark Attendance", desc: "Record today's class attendance", href: "/faculty/attendance", emoji: "📋" },
+    { label: "Update Marks", desc: "Enter exam or quiz marks", href: "/faculty/marks", emoji: "✏️" },
+    { label: "Upload Material", desc: "Share resources with students", href: "#", emoji: "📤" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'var(--font-display)' }}>
-          Welcome, {profile?.full_name || "Faculty"}! 📚
-        </h2>
-        <p className="text-muted-foreground">Manage your classes and students</p>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      <div className="page-header animate-slide-up">
+        <h2 className="page-title">Welcome, {profile?.full_name?.split(" ")[0] || "Faculty"}! 📚</h2>
+        <p className="page-subtitle">Manage your classes and track student progress</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((s) => (
-          <Card key={s.label} className="glass-card">
-            <CardContent className="p-5">
-              <div className={`w-10 h-10 rounded-xl ${s.bg} flex items-center justify-center mb-3`}>
-                <s.icon className={`w-5 h-5 ${s.color}`} />
-              </div>
-              <p className="text-2xl font-bold text-foreground" style={{ fontFamily: 'var(--font-display)' }}>{s.value}</p>
-              <p className="text-sm text-muted-foreground">{s.label}</p>
-            </CardContent>
-          </Card>
+        {stats.map((s, i) => (
+          <div key={s.label} className={`stat-card animate-slide-up stagger-${i + 1}`}>
+            <div className={`w-11 h-11 rounded-2xl ${s.gradient} flex items-center justify-center shadow-sm mb-4`}>
+              <s.icon className="w-5 h-5 text-primary-foreground" />
+            </div>
+            <p className="text-3xl font-bold text-foreground font-display">{s.value}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{s.label}</p>
+          </div>
         ))}
       </div>
 
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-display)' }}>Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[
-            { label: "Mark Attendance", desc: "Record today's attendance", href: "/faculty/attendance" },
-            { label: "Update Marks", desc: "Enter exam/quiz marks", href: "/faculty/marks" },
-            { label: "Upload Material", desc: "Share course resources", href: "#" },
-          ].map((action) => (
-            <a key={action.label} href={action.href} className="p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors block">
-              <p className="font-medium text-foreground">{action.label}</p>
-              <p className="text-sm text-muted-foreground">{action.desc}</p>
-            </a>
+      <div className="animate-slide-up stagger-5">
+        <h3 className="text-lg font-semibold font-display text-foreground mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {actions.map((action) => (
+            <Link key={action.label} to={action.href} className="group">
+              <Card className="glass-card-elevated h-full">
+                <CardContent className="p-5">
+                  <span className="text-2xl mb-3 block">{action.emoji}</span>
+                  <h4 className="font-semibold font-display text-foreground mb-1">{action.label}</h4>
+                  <p className="text-sm text-muted-foreground">{action.desc}</p>
+                  <span className="flex items-center gap-1 mt-3 text-xs font-medium text-primary group-hover:gap-2 transition-all">
+                    Open <ArrowUpRight className="w-3 h-3" />
+                  </span>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

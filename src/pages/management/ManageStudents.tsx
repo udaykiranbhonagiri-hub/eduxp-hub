@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus, Search } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { UserPlus, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ManageStudents() {
@@ -21,6 +20,7 @@ export default function ManageStudents() {
     { name: "Alice Johnson", dept: "Computer Science", year: 3, section: "A" },
     { name: "Bob Smith", dept: "Computer Science", year: 3, section: "B" },
     { name: "Carol Williams", dept: "Electronics", year: 2, section: "A" },
+    { name: "David Brown", dept: "Mechanical", year: 4, section: "A" },
   ];
 
   const handleAddStudent = async () => {
@@ -29,42 +29,41 @@ export default function ManageStudents() {
       return;
     }
     setLoading(true);
-    try {
-      // In production, this would create the user account and assign role
-      // For now, we show the form structure
-      toast.success(`Student ${fullName} added successfully!`);
-      setEmail(""); setFullName(""); setDepartment(""); setYear(""); setSection("");
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
+    toast.success(`Student ${fullName} added successfully!`);
+    setEmail(""); setFullName(""); setDepartment(""); setYear(""); setSection("");
+    setLoading(false);
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-foreground" style={{ fontFamily: 'var(--font-display)' }}>Manage Students</h2>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="page-header animate-slide-up">
+        <h2 className="page-title">Manage Students</h2>
+        <p className="page-subtitle">Add and organize students by department, year, and section</p>
+      </div>
 
-      <Card className="glass-card">
+      <Card className="glass-card animate-slide-up stagger-1">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
-            <UserPlus className="w-5 h-5 text-primary" /> Add New Student
+          <CardTitle className="flex items-center gap-2 font-display">
+            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
+              <UserPlus className="w-4 h-4 text-primary-foreground" />
+            </div>
+            Add New Student
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Full Name</Label>
-              <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Student name" />
+              <Label className="text-sm font-medium">Full Name</Label>
+              <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Student name" className="h-11 rounded-xl" />
             </div>
             <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@college.edu" />
+              <Label className="text-sm font-medium">Email</Label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@college.edu" className="h-11 rounded-xl" />
             </div>
             <div className="space-y-2">
-              <Label>Department</Label>
+              <Label className="text-sm font-medium">Department</Label>
               <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectTrigger className="h-11 rounded-xl"><SelectValue placeholder="Select" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="cs">Computer Science</SelectItem>
                   <SelectItem value="ec">Electronics</SelectItem>
@@ -74,58 +73,60 @@ export default function ManageStudents() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label>Year</Label>
-              <Select value={year} onValueChange={setYear}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1st Year</SelectItem>
-                  <SelectItem value="2">2nd Year</SelectItem>
-                  <SelectItem value="3">3rd Year</SelectItem>
-                  <SelectItem value="4">4th Year</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Section</Label>
-              <Select value={section} onValueChange={setSection}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="A">Section A</SelectItem>
-                  <SelectItem value="B">Section B</SelectItem>
-                  <SelectItem value="C">Section C</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Year</Label>
+                <Select value={year} onValueChange={setYear}>
+                  <SelectTrigger className="h-11 rounded-xl"><SelectValue placeholder="Year" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1st</SelectItem>
+                    <SelectItem value="2">2nd</SelectItem>
+                    <SelectItem value="3">3rd</SelectItem>
+                    <SelectItem value="4">4th</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Section</Label>
+                <Select value={section} onValueChange={setSection}>
+                  <SelectTrigger className="h-11 rounded-xl"><SelectValue placeholder="Sec" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="A">A</SelectItem>
+                    <SelectItem value="B">B</SelectItem>
+                    <SelectItem value="C">C</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
-          <Button onClick={handleAddStudent} disabled={loading} className="gradient-primary text-primary-foreground">
+          <Button onClick={handleAddStudent} disabled={loading} className="h-11 rounded-xl gradient-primary text-primary-foreground shadow-lg shadow-primary/20">
             <UserPlus className="w-4 h-4 mr-2" /> Add Student
           </Button>
         </CardContent>
       </Card>
 
-      <Card className="glass-card">
+      <Card className="glass-card animate-slide-up stagger-2">
         <CardHeader>
-          <CardTitle style={{ fontFamily: 'var(--font-display)' }}>Current Students</CardTitle>
+          <CardTitle className="font-display text-lg">Current Students</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {existingStudents.map((s, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-secondary/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">{s.name[0]}</div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{s.name}</p>
-                    <p className="text-xs text-muted-foreground">{s.dept}</p>
-                  </div>
+        <CardContent className="space-y-2">
+          {existingStudents.map((s, i) => (
+            <div key={i} className="flex items-center justify-between p-3.5 rounded-xl bg-muted/40 hover:bg-muted/60 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center text-xs font-bold text-primary-foreground">
+                  {s.name.split(" ").map(n => n[0]).join("")}
                 </div>
-                <div className="flex gap-2">
-                  <Badge variant="secondary">Year {s.year}</Badge>
-                  <Badge variant="outline">Sec {s.section}</Badge>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{s.name}</p>
+                  <p className="text-xs text-muted-foreground">{s.dept}</p>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="flex gap-1.5">
+                <Badge variant="secondary" className="rounded-lg text-xs">Year {s.year}</Badge>
+                <Badge variant="outline" className="rounded-lg text-xs">Sec {s.section}</Badge>
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>
