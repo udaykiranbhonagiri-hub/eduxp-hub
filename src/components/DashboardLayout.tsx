@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, ClipboardList, BookOpen, LogOut, Menu, X,
-  GraduationCap, Bot, ChevronLeft, Bell, Search
+  GraduationCap, Bot, ChevronLeft, Bell, Search, UserCog
 } from "lucide-react";
 
 interface Props {
