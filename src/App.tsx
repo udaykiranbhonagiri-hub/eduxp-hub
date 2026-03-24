@@ -59,6 +59,7 @@ function AppRoutes() {
       <Route path="/faculty" element={<DashboardLayout><FacultyDashboard /></DashboardLayout>} />
       <Route path="/faculty/attendance" element={<DashboardLayout><FacultyAttendance /></DashboardLayout>} />
       <Route path="/faculty/marks" element={<DashboardLayout><FacultyMarks /></DashboardLayout>} />
+      <Route path="/faculty/students" element={<DashboardLayout><FacultyStudentManager /></DashboardLayout>} />
 
       {/* Management Routes */}
       <Route path="/management" element={<DashboardLayout><ManagementDashboard /></DashboardLayout>} />
