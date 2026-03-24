@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, Users, ClipboardList, BookOpen, LogOut, Menu, X,
-  GraduationCap, Bot, ChevronLeft, Bell, Search
+  GraduationCap, Bot, ChevronLeft, Bell, Search, UserCog
 } from "lucide-react";
 
 interface Props {
@@ -20,6 +20,7 @@ const studentLinks = [
 
 const facultyLinks = [
   { to: "/faculty", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/faculty/students", icon: UserCog, label: "Student Manager" },
   { to: "/faculty/attendance", icon: ClipboardList, label: "Attendance" },
   { to: "/faculty/marks", icon: BookOpen, label: "Marks" },
 ];
