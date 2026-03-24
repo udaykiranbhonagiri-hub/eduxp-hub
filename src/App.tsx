@@ -14,6 +14,7 @@ import StudentMentor from "@/pages/student/StudentMentor";
 import FacultyDashboard from "@/pages/faculty/FacultyDashboard";
 import FacultyAttendance from "@/pages/faculty/FacultyAttendance";
 import FacultyMarks from "@/pages/faculty/FacultyMarks";
+import FacultyStudentManager from "@/pages/faculty/FacultyStudentManager";
 import ManagementDashboard from "@/pages/management/ManagementDashboard";
 import ManageStudents from "@/pages/management/ManageStudents";
 import ManageFaculty from "@/pages/management/ManageFaculty";
